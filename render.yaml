@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: cricsphere-backend
+    runtime: node          # ← Docker nahi, "node" specify karna zaroori
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
