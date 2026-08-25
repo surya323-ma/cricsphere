@@ -17,7 +17,8 @@ export default function HomePage() {
   
   const fetchStats = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/health');
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await axios.get(`${apiUrl}/api/health`);
       console.log('API Connected:', response.data);
       setLoading(false);
     } catch (error) {
