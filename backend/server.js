@@ -39,7 +39,7 @@ app.get('/api/seed-now', async (req, res) => {
     if (existingadmin) {
       return res.json({ message: 'Admin already exists' });
     }
-    const admin = new admin({
+    const newAdmin = new Admin({
       name: 'Super Admin',
       email: 'admin@cricsphere.com',
       password: 'admin123',
