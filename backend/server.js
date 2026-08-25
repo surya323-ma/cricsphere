@@ -13,10 +13,7 @@ app.use(express.json());
 
 // MongoDB Connection
 const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/cricsphere';
-mongoose.connect(mongoUri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(mongoUri)
 .then(() => console.log('✓ MongoDB connected'))
 .catch(err => console.error('MongoDB connection error:', err));
 
@@ -26,7 +23,6 @@ const matchRoutes = require('./routes/matches');
 const playerRoutes = require('./routes/players');
 const newsRoutes = require('./routes/news');
 const userRoutes = require('./routes/users');
-const subscriptionRoutes = require('./routes/subscriptions');
 
 // Mount Routes
 app.use('/api/auth', authRoutes);
@@ -34,7 +30,6 @@ app.use('/api/matches', matchRoutes);
 app.use('/api/players', playerRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/subscriptions', subscriptionRoutes);
 
 // Health Check
 app.get('/api/health', (req, res) => {
