@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: cricsphere-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: cricsphere
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - cricsphere-network
+
+  # Backend API
+  backend:
+    build: ./backend
+    container_name: cricsphere-backend
+    environment:
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/cricsphere?authSource=admin
+      JWT_SECRET: cricsphere-secret-key-2024
+      PORT: 5000
+      NODE_ENV: development
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    volumes:
+      - ./backend:/app
+    networks:
+      - cricsphere-network
+    command: npm start
+
+  # Frontend
+  frontend:
+    build: ./frontend
+    container_name: cricsphere-frontend
+    environment:
+      REACT_APP_API_URL: http://localhost:5000
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+    networks:
+      - cricsphere-network
+    command: npm run dev
+
+  # Python ML Service
+  python-service:
+    build: ./python-service
+    container_name: cricsphere-python
+    environment:
+      BACKEND_URL: http://backend:5000
+      PORT: 5001
+    ports:
+      - "5001:5001"
+    depends_on:
+      - backend
+    networks:
+      - cricsphere-network
+    command: python app.py
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  cricsphere-network:
+    driver: bridge
