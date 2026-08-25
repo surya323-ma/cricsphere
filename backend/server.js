@@ -32,12 +32,24 @@ app.use('/api/news', newsRoutes);
 app.use('/api/users', userRoutes);
 
 // Health Check
-app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'Server running ✅',
-    timestamp: new Date(),
-    database: mongoose.connection.readyState === 1 ? 'Connected ✓' : 'Disconnected ✗'
-  });
+app.get('/api/seed-now', async (req, res) => {
+  try {
+    const Admin = require('./models/Admin');
+    const existingAdmin = await Admin.findOne({ email: 'admin@cricsphere.com' });
+    if (existingAdmin) {
+      return res.json({ message: 'Admin already exists' });
+    }
+    const admin = new Admin({
+      name: 'Super Admin',
+      email: 'admin@cricsphere.com',
+      password: 'admin123',
+      role: 'super_admin'
+    });
+    await admin.save();
+    res.json({ message: '✓ Admin created successfully!' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // 404 Handler
