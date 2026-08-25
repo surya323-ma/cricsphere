@@ -34,8 +34,11 @@ app.use('/api/users', userRoutes);
 // Health Check
 app.get('/api/seed-now', async (req, res) => {
   try {
-    const admin = require('./models/admin');
-    const existingadmin = await admin.findOne({ email: 'admin@cricsphere.com' });
+    const Admin = require('./models/Admin');
+
+    const existingAdmin = await Admin.findOne({
+      email: 'admin@cricsphere.com'
+    });
     if (existingadmin) {
       return res.json({ message: 'Admin already exists' });
     }
